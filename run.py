@@ -1,5 +1,5 @@
 import time
-from tkinter import messagebox
+from tkinter import messagebox, Toplevel
 from tkinter import ttk
 from customtkinter import CTkFont
 import customtkinter as ctk
@@ -122,7 +122,41 @@ def main():
                 new_window.destroy()
             except:
                 messagebox.showerror("اضافه کردن با شکست مواجه شد")
+    def Tag():
+        new_window = ctk.CTkToplevel()
+        new_window.geometry("500x500")
+        new_window.lift()
+        new_window.focus_force()
+        tagvar = ctk.StringVar()
+        entryTag = ctk.CTkEntry(new_window, placeholder_text=":تگ", textvariable=tagvar)
+        entryTag.grid(row=0, column=0, padx=5, pady=15)
 
+        AddBut = ctk.CTkButton(new_window,text = "تگ افزودن", command=lambda : writeTag(tagvar.get()))
+        AddBut.grid(row=0, column=1,sticky="e")
+
+
+        with open("tags.txt", "r", encoding="utf-8") as file:
+            lines =file.readlines()
+        comboVar = ctk.StringVar()
+        comboDel = ctk.CTkComboBox(new_window,values =lines,variable=comboVar)
+        comboDel.grid(row=2, column=0, sticky="e")
+
+        ButDel = ctk.CTkButton(new_window,text="تگ حذف", command= lambda : delTag(comboVar.get()))
+        ButDel.grid(row=2, column=1, padx=5, pady=15)
+
+        def delTag(text):
+            with open("tags.txt", "r", encoding="utf-8") as file:
+                lines = file.readlines()
+            for i in lines:
+                if i == text:
+                    del i
+            with open("tags.txt", "w", encoding="utf-8") as file:
+                file.writelines(lines)
+            new_window.destroy()
+        def writeTag(text):
+            with open("tags.txt", "a", encoding="utf-8") as file:
+                file.write(text + "\n")
+            new_window.destroy()
 
 
 
@@ -191,13 +225,14 @@ def main():
                             )
     butCredit.grid(row=5, column=0, sticky="ew", padx=5, pady=15)
 
-    tag = ctk.CTkButton(root,text="اضافه کردن تگ",
+    tag = ctk.CTkButton(root,text="مدیریت تگ",
                         font=("IranNastaliq", 45),
                         height=40,
                         corner_radius=40,
                         fg_color="#3244E6",
                         border_color="white",
-                        border_width=1
+                        border_width=1,
+                        command=Tag
                         )
     tag.grid(row=6, column=0, sticky="ew", padx=5, pady=15)
     
