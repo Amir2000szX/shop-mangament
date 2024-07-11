@@ -1,6 +1,7 @@
 from sqlalchemy import create_engine, Column, Integer, String, DECIMAL, DateTime , text
 from sqlalchemy.orm import declarative_base, sessionmaker
 from datetime import datetime,timezone
+from persiantools.jdatetime import JalaliDateTime , JalaliDate
 import pytz
 
 iran_time = pytz.timezone('Iran')
@@ -35,7 +36,9 @@ Session = sessionmaker(bind=engine)
 session = Session()
 
 def add_row(name, price, tags, phone_num, color):
-    sell = Sell(name, price, datetime.now(iran_time), tags, phone_num, color)
+    today =JalaliDateTime.now(tz=iran_time)
+    print(today.day)
+    sell = Sell(name, price, datetime.now(), tags, phone_num, color)
     session.add(sell)
     session.commit()
 def querry(command:str):
@@ -44,5 +47,6 @@ def querry(command:str):
         connection.commit()
 def end():
     session.close()
-
+today =JalaliDateTime.now(tz=iran_time)
+print(today.year)
 
